@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pylab as pl
+import subprocess
 
 def get_positions(data, team_filter=None):
     x_positions = []
@@ -14,13 +15,12 @@ def get_positions(data, team_filter=None):
             print ex, "\non line:\n", line, "\n"
     return x_positions, y_positions
 
-with open('shots.txt', 'r') as f:
-    file_data = f.read()
+data = subprocess.Popen("./parse.sh", shell=True, stdout=subprocess.PIPE)
+shot_data = []
+for line in data.stdout.readlines():
+    shot_data.append(line.rstrip())
 
-lines = file_data.split('\n')
-del lines[-1]
-
-x, y = get_positions(lines, team_filter="CT")
+x, y = get_positions(shot_data)
 fig = pl.figure(figsize=(50, 50))
 axes = fig.add_axes([0, 0, 1, 1])
 axes.axis('off')
